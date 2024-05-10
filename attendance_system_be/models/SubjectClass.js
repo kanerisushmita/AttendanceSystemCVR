@@ -8,7 +8,8 @@ const SubjectClassSchema = new mongoose.Schema({
     students_count: Number,
     latitude: Number,
     longitude: Number,
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    count:Number
 })
 
 const SubjectClassModel = mongoose.model("subjectclasses", SubjectClassSchema)

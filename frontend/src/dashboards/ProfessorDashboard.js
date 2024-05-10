@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import hasloggedin from "../helper/hasloggedin";
-
-
 function Dashboard() {
     const navigate = useNavigate()
     const professorDetails = JSON.parse(sessionStorage.getItem("user"));
@@ -20,7 +18,8 @@ function Dashboard() {
         navigate('/createsubjectclass')
     }
     return ( 
-        <div className="d-flex justify-content-center align-items-center bg-light vh-100">
+        <div className="d-flex justify-content-center align-items-center bg-black vh-50">
+            <div className="bg-white">
             <div className="p-3 rounded w-15">
 
                 <button type="button" onClick={handleCreateClass} className="btn btn-primary">Create Class</button>
@@ -38,10 +37,13 @@ function Dashboard() {
                 ))}
                 
             </div>
-
+            
+            <div>
+                {professorDetails.isHOD ? <button type="button" className="btn btn-primary">Show Professor Details</button> : <></>}
+            </div>
+            </div>
         </div>
         
-
 
      );
 }
