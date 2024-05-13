@@ -8,7 +8,7 @@ import StudentDashboard from './dashboards/StudentDashboard'
 import ProfessorDashboard from './dashboards/ProfessorDashboard'
 import Home from './Home'
 import AuthenticateRoute from './helper/AuthenticateRoute'
-
+import StudentAttendance from  '../src/dashboards/StudentAttendance'; 
 
 function App() {
   return (
@@ -34,6 +34,9 @@ function App() {
             exact
             element={<AuthenticateRoute Element={SubjectClass} Role = {"professor"} endpoint = {"professorlogin"} />} //send Role parameter as desired access control role
         />
+          <Route path="/viewAttendance" element={<StudentAttendance />} />
+
+        
       </Routes>
     </BrowserRouter>
   )

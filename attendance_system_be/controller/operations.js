@@ -2,7 +2,7 @@ const router = require("express").Router();
 const SubjectClass = require("../models/SubjectClass");
 
 router.post("/markattendance", (req, res) => {
-  console.log(req.body);
+  console.log("Request Body:", req.body);
   const _id = req.body.class_code;
   const roll_no = req.body.roll_no;
   SubjectClass.updateOne(
@@ -10,8 +10,12 @@ router.post("/markattendance", (req, res) => {
     { $push: { present_students: roll_no } }
   )
     .then((result) => {
-      console.log(result);
-      return res.json("Success");
+      console.log("Update Result:", result);
+      if (result.nModified > 0) { // Check if any document was modified
+        return res.json({ status: "success", message: "Attendance marked successfully" });
+      } else {
+        return res.json({ status: "error", message: "Attendance already marked or class not found" });
+      }
     })
     .catch((err) => {
       console.log(err);

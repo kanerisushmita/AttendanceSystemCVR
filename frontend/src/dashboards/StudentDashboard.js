@@ -78,6 +78,13 @@ function Dashboard() {
       setError("Geolocation is not supported by your browser.");
     }
   };
+
+  const handleViewAttendance = () => 
+    {
+      navigate("/viewAttendance")
+         
+      
+    }
   return (
     <div className="d-flex justify-content-center align-items-center bg-light vh-100">
       <div className="p-3 rounded w-15">
@@ -89,21 +96,36 @@ function Dashboard() {
           className="form-control rounded-0"
           onChange={(e) => setClassCode(e.target.value)}
         />
-        <button
-          type="button"
-          onClick={handleMarkAttendance}
-          className="btn btn-primary"
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+          }}
         >
-          Mark attendance
-        </button>
+          <button
+            type="button"
+            onClick={handleMarkAttendance}
+            className="btn btn-primary"
+            style={{ marginRight: "10px" }}
+          >
+            Mark attendance
+          </button>
+          <button
+            type="button"
+            onClick={handleViewAttendance}
+            className="btn btn-primary"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            View attendance
+          </button>
+        </div>
         <p>{error}</p>
-        <button
-          type="button"
-          className="btn btn-primary"
-          style={{ marginLeft: "15px" }}
-        >
-          View attendance
-        </button>
       </div>
     </div>
   );
