@@ -54,7 +54,6 @@ function StudentAttendance() {
         setFormData(formattedData);
         setSubmitted(true);
     };
-
     return (
         <div>
             <h2 style={{ textAlign: "center", marginTop: "40px", marginBottom: "25px" }}>Student Attendance</h2>
@@ -97,32 +96,42 @@ function StudentAttendance() {
                     </form>
                 </div>
             </div>
-            {submitted && attendanceData.length > 0 && (
-                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
-                    <thead>
-                        <tr>
-                            <th style={tableHeaderStyle}>Name</th>
-                            <th style={tableHeaderStyle}>Roll Number</th>
-                            <th style={tableHeaderStyle}>Subject</th>
-                            <th style={tableHeaderStyle}>Attended Classes</th>
-                            <th style={tableHeaderStyle}>Total Classes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style={tableCellStyle}>{studentDetails.name}</td>
-                            <td style={tableCellStyle}>{studentDetails.rollNumber}</td>
-                            <td style={tableCellStyle}>{formData.subject}</td>
-                            <td style={tableCellStyle}>{attendanceData[0].attendance}</td>
-                            <td style={tableCellStyle}>{professorClassCount}</td>
-                        </tr>
-                    </tbody>
-                </table>
+            {submitted || attendanceData.length > 0 ? (
+                <div>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+                        <thead>
+                            <tr>
+                                <th style={tableHeaderStyle}>Name</th>
+                                <th style={tableHeaderStyle}>Roll Number</th>
+                                <th style={tableHeaderStyle}>Subject</th>
+                                <th style={tableHeaderStyle}>Attended Classes</th>
+                                <th style={tableHeaderStyle}>Total Classes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {attendanceData.length > 0 ? (
+                                <tr>
+                                    <td style={tableCellStyle}>{studentDetails.name}</td>
+                                    <td style={tableCellStyle}>{studentDetails.rollNumber}</td>
+                                    <td style={tableCellStyle}>{formData.subject}</td>
+                                    <td style={tableCellStyle}>{attendanceData[0].attendance}</td>
+                                    <td style={tableCellStyle}>{professorClassCount}</td>
+                                </tr>
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" style={tableCellStyle}>No attendance data available</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            ) : (
+                <p>Please submit the form to view attendance data.</p>
             )}
         </div>
     );
+    
 }
-
 // Define table header and cell styles
 const tableHeaderStyle = {
     padding: '8px',
