@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 function StudentAttendance() {
-    const [attendanceData, setAttendanceData] = useState([]);
+    const [attendanceCount, setAttendanceCount] = useState(0);
     const [formData, setFormData] = useState({
         subject: '',
         startDate: '',
@@ -10,28 +10,56 @@ function StudentAttendance() {
     });
     const [submitted, setSubmitted] = useState(false);
     const [professorClassCount, setProfessorClassCount] = useState(0);
-    const studentDetails = JSON.parse(sessionStorage.getItem("user"));
+    const [studentDetails, setStudentDetails] = useState({});
+
+    useEffect(() => {
+        // Retrieve student details from sessionStorage
+        const studentData = sessionStorage.getItem("user");
+        if (studentData) {
+            const parsedStudentData = JSON.parse(studentData);
+            setStudentDetails(parsedStudentData);
+            console.log("Retrieved student details:", parsedStudentData);
+        } else {
+            console.error("No student data found in sessionStorage");
+        }
+    }, []);
+
+    const fetchAttendanceData = useCallback(async () => {
+        if (!studentDetails.roll_no || !studentDetails.class_code) {
+            console.error('Missing student details.');
+            return;
+        }
+        try {
+            const attendanceUrl = `http://localhost:3001/api/attendanceController/getStudentCount?rollNumber=${studentDetails.roll_no}&class_code=${studentDetails.class_code}&subject=${formData.subject}&startDate=${formData.startDate}&endDate=${formData.endDate}`;
+            const classCountUrl = `http://localhost:3001/api/attendanceController/getProfessorClassCount?class_code=${studentDetails.class_code}&subject=${formData.subject}&startDate=${formData.startDate}&endDate=${formData.endDate}`;
+
+            console.log("Fetching attendance data from:", attendanceUrl);
+            console.log("Fetching class count data from:", classCountUrl);
+
+            const studentAttendanceResponse = await axios.get(attendanceUrl);
+            const professorClassCountResponse = await axios.get(classCountUrl);
+
+            console.log("Attendance response:", studentAttendanceResponse.data);
+            console.log("Class count response:", professorClassCountResponse.data);
+
+            // Ensure the response has the expected structure
+            if (typeof studentAttendanceResponse.data === 'number') {
+                setAttendanceCount(studentAttendanceResponse.data);
+            } else {
+                console.error('Unexpected response format for student attendance:', studentAttendanceResponse.data);
+            }
+
+            setProfessorClassCount(professorClassCountResponse.data);
+        } catch (error) {
+            console.error('Error fetching attendance:', error);
+        }
+    }, [studentDetails, formData]);
 
     useEffect(() => {
         if (submitted) {
             fetchAttendanceData();
         }
-    }, [submitted]);
-
-    const fetchAttendanceData = async () => {
-        try {
-            const attendanceUrl = `http://localhost:3001/api/student-attendance-count/${studentDetails.rollNumber}/${studentDetails.rollNumber}/${formData.startDate}/${formData.endDate}`;
-            const classCountUrl = `http://localhost:3001/api/professor-class-count/${formData.professorCode}/${formData.startDate}/${formData.endDate}`;
-
-            const studentAttendanceResponse = await axios.get(attendanceUrl);
-            const professorClassCountResponse = await axios.get(classCountUrl);
-
-            setAttendanceData(studentAttendanceResponse.data);
-            setProfessorClassCount(professorClassCountResponse.data);
-        } catch (error) {
-            console.error('Error fetching attendance:', error);
-        }
-    };
+    }, [submitted, fetchAttendanceData]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,21 +67,24 @@ function StudentAttendance() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Convert dates from DD-MM-YYYY to YYYY-MM-DD
-        const convertDate = (date) => {
-            const [day, month, year] = date.split('-');
-            return `${year}-${month}-${day}`;
+        // Convert dates from YYYY-MM-DD to ISO format with default times
+        const convertDate = (date, isEndDate = false) => {
+            const [year, month, day] = date.split('-');
+            return isEndDate ? `${year}-${month}-${day}T23:59:59.999Z` : `${year}-${month}-${day}T00:00:00.000Z`;
         };
 
         const formattedData = {
             ...formData,
             startDate: convertDate(formData.startDate),
-            endDate: convertDate(formData.endDate)
+            endDate: convertDate(formData.endDate, true)
         };
+
+        console.log("Formatted form data:", formattedData);
 
         setFormData(formattedData);
         setSubmitted(true);
     };
+
     return (
         <div>
             <h2 style={{ textAlign: "center", marginTop: "40px", marginBottom: "25px" }}>Student Attendance</h2>
@@ -71,37 +102,36 @@ function StudentAttendance() {
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">Start Date (DD-MM-YYYY):</label>
+                            <label className="form-label">Start Date (YYYY-MM-DD):</label>
                             <input
                                 type="date"
                                 className="form-control"
                                 name="startDate"
                                 value={formData.startDate}
                                 onChange={handleChange}
-                                placeholder="DD-MM-YYYY"
+                                placeholder="YYYY-MM-DD"
                             />
                         </div>
                         <div className="mb-3">
-                            <label className="form-label">End Date (DD-MM-YYYY):</label>
+                            <label className="form-label">End Date (YYYY-MM-DD):</label>
                             <input
                                 type="date"
                                 className="form-control"
                                 name="endDate"
                                 value={formData.endDate}
                                 onChange={handleChange}
-                                placeholder="DD-MM-YYYY"
+                                placeholder="YYYY-MM-DD"
                             />
                         </div>
                         <button type="submit" className="btn btn-primary">Submit</button>
                     </form>
                 </div>
             </div>
-            {submitted || attendanceData.length > 0 ? (
+            {submitted && (
                 <div>
                     <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
                         <thead>
                             <tr>
-                                <th style={tableHeaderStyle}>Name</th>
                                 <th style={tableHeaderStyle}>Roll Number</th>
                                 <th style={tableHeaderStyle}>Subject</th>
                                 <th style={tableHeaderStyle}>Attended Classes</th>
@@ -109,29 +139,21 @@ function StudentAttendance() {
                             </tr>
                         </thead>
                         <tbody>
-                            {attendanceData.length > 0 ? (
-                                <tr>
-                                    <td style={tableCellStyle}>{studentDetails.name}</td>
-                                    <td style={tableCellStyle}>{studentDetails.rollNumber}</td>
-                                    <td style={tableCellStyle}>{formData.subject}</td>
-                                    <td style={tableCellStyle}>{attendanceData[0].attendance}</td>
-                                    <td style={tableCellStyle}>{professorClassCount}</td>
-                                </tr>
-                            ) : (
-                                <tr>
-                                    <td colSpan="5" style={tableCellStyle}>No attendance data available</td>
-                                </tr>
-                            )}
+                            <tr>
+                                <td style={tableCellStyle}>{studentDetails.roll_no}</td>
+                                <td style={tableCellStyle}>{formData.subject}</td>
+                                <td style={tableCellStyle}>{attendanceCount}</td>
+                                <td style={tableCellStyle}>{professorClassCount}</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
-            ) : (
-                <p>Please submit the form to view attendance data.</p>
             )}
+            {!submitted && <p>Please submit the form to view attendance data.</p>}
         </div>
     );
-    
 }
+
 // Define table header and cell styles
 const tableHeaderStyle = {
     padding: '8px',

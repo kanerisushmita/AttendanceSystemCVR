@@ -1,28 +1,58 @@
-const express = require("express");
-const router = express.Router();
+const SubjectClassModel = require("../models/SubjectClass"); // Replace with your model path
+const router = require("express").Router();
 
-const SubjectClassModel = require("../models/SubjectClass");
+router.get("/getProfessorClassCount", async (req, res) => {
+  const classcode = req.query.class_code;
+  const subject = req.query.subject;
+  const startDate = req.query.startDate; // Assuming YYYY-MM-DD format
+  const endDate = req.query.endDate; // Assuming YYYY-MM-DD format
 
+  try {
+    // Parse and format dates to ISO 8601 timestamps
 
-router.get('/getSubject',(req,res)=>
-{
-    const subject = req.query.subject;
-    SubjectClassModel.find({subject:subject},(err,subjectClass)=>
-      {
-        if(err)
-          {
-            console.log("err:",err);
-            res.json({success:false,msg:"Error in getting subject class"});
-            }
-            else
-            {
-              res.json({success:true,msg:"Subject class found",subjectClass:subjectClass});
-              }
-              });
-
-
+    const count = SubjectClassModel.countDocuments({
+      class_code: classcode,
+      subject: subject,
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+      console.log("Response Sending: ") 
+    count.then((count) => res.json(count));
+  } catch (error) {
+    console.error("Error fetching class count:", error);
+    res.status(500).json({ message: "Error fetching class count" });
+  }
 });
 
+// Count of the Student Attendance
 
+router.get("/getStudentCount", async (req, res) => {
+  const rollNumber = req.query.rollNumber;
+  const classcode = req.query.class_code;
+  const subject = req.query.subject;
+  const startDate = req.query.startDate; // Assuming YYYY-MM-DD format
+  const endDate = req.query.endDate; // Assuming YYYY-MM-DD format
+
+  try {
+    // Parse and format dates to ISO 8601 timestamps
+
+    const count = SubjectClassModel.countDocuments({
+      present_students: rollNumber,
+      class_code: classcode,
+      subject: subject,
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    });
+
+    count.then((count) => res.json( count ));
+  } catch (error) {
+    console.error("Error fetching class count:", error);
+    res.status(500).json({ message: "Error fetching class count" });
+  }
+});
 
 module.exports = router;
