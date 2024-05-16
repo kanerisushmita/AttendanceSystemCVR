@@ -1,15 +1,14 @@
-const SubjectClassModel = require("../models/SubjectClass"); // Replace with your model path
+const SubjectClassModel = require("../models/SubjectClass"); 
 const router = require("express").Router();
 
 router.get("/getProfessorClassCount", async (req, res) => {
   const classcode = req.query.class_code;
   const subject = req.query.subject;
-  const startDate = req.query.startDate; // Assuming YYYY-MM-DD format
-  const endDate = req.query.endDate; // Assuming YYYY-MM-DD format
+  const startDate = req.query.startDate; 
+  const endDate = req.query.endDate;  
 
   try {
-    // Parse and format dates to ISO 8601 timestamps
-
+    
     const count = SubjectClassModel.countDocuments({
       class_code: classcode,
       subject: subject,
@@ -26,17 +25,16 @@ router.get("/getProfessorClassCount", async (req, res) => {
   }
 });
 
-// Count of the Student Attendance
+ 
 
 router.get("/getStudentCount", async (req, res) => {
   const rollNumber = req.query.rollNumber;
   const classcode = req.query.class_code;
   const subject = req.query.subject;
-  const startDate = req.query.startDate; // Assuming YYYY-MM-DD format
-  const endDate = req.query.endDate; // Assuming YYYY-MM-DD format
+  const startDate = req.query.startDate;  
+  const endDate = req.query.endDate;  
 
-  try {
-    // Parse and format dates to ISO 8601 timestamps
+  try { 
 
     const count = SubjectClassModel.countDocuments({
       present_students: rollNumber,

@@ -10,6 +10,7 @@ const homeRoutes = require("./home");
 const operationsRoutes = require("./operations");
 const attendanceRoutes = require("./attendanceController")
 
+
 router.use("/api/login", loginRoutes);
 router.use("/api/dashboard", dashboardRoutes);
 router.use("/api/register", registerRoutes);

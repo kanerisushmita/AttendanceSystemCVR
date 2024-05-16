@@ -13,7 +13,7 @@ function StudentAttendance() {
     const [studentDetails, setStudentDetails] = useState({});
 
     useEffect(() => {
-        // Retrieve student details from sessionStorage
+        
         const studentData = sessionStorage.getItem("user");
         if (studentData) {
             const parsedStudentData = JSON.parse(studentData);
@@ -42,7 +42,7 @@ function StudentAttendance() {
             console.log("Attendance response:", studentAttendanceResponse.data);
             console.log("Class count response:", professorClassCountResponse.data);
 
-            // Ensure the response has the expected structure
+           
             if (typeof studentAttendanceResponse.data === 'number') {
                 setAttendanceCount(studentAttendanceResponse.data);
             } else {
@@ -67,7 +67,7 @@ function StudentAttendance() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Convert dates from YYYY-MM-DD to ISO format with default times
+        
         const convertDate = (date, isEndDate = false) => {
             const [year, month, day] = date.split('-');
             return isEndDate ? `${year}-${month}-${day}T23:59:59.999Z` : `${year}-${month}-${day}T00:00:00.000Z`;
@@ -153,8 +153,7 @@ function StudentAttendance() {
         </div>
     );
 }
-
-// Define table header and cell styles
+ 
 const tableHeaderStyle = {
     padding: '8px',
     textAlign: 'left',
