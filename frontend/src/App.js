@@ -8,8 +8,8 @@ import StudentDashboard from './dashboards/StudentDashboard'
 import ProfessorDashboard from './dashboards/ProfessorDashboard'
 import Home from './Home'
 import AuthenticateRoute from './helper/AuthenticateRoute'
-
-
+import ClasswiseDetails from "./DetailsComponents/ClasswiseDetails"
+import StudentWise from "./DetailsComponents/StudentWise"
 function App() {
   return (
     <BrowserRouter>
@@ -33,6 +33,16 @@ function App() {
             path="/createsubjectclass"
             exact
             element={<AuthenticateRoute Element={SubjectClass} Role = {"professor"} endpoint = {"professorlogin"} />} //send Role parameter as desired access control role
+        />
+      <Route
+          path="/classWise"
+          exact
+          element={<AuthenticateRoute Element={ClasswiseDetails} Role = {"professor"} endpoint = {"professorlogin"} />} //send Role parameter as desired access control role
+        />
+        <Route
+          path="/StudentWise"
+          exact
+          element={<AuthenticateRoute Element={StudentWise} Role = {"professor"} endpoint = {"professorlogin"} />} //send Role parameter as desired access control role
         />
       </Routes>
     </BrowserRouter>

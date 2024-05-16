@@ -1,8 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import hasloggedin from "../helper/hasloggedin";
+import ClasswiseDetails from "../DetailsComponents/ClasswiseDetails";
+import { Link } from "react-router-dom";
 function Dashboard() {
+    const [show,setShow] = useState(false);
     const navigate = useNavigate()
     const professorDetails = JSON.parse(sessionStorage.getItem("user"));
     axios.defaults.withCredentials = true;
@@ -17,7 +20,9 @@ function Dashboard() {
     const handleCreateClass = ()=>{
         navigate('/createsubjectclass')
     }
+ 
     return ( 
+        <>
         <div className="d-flex justify-content-center align-items-center bg-black vh-50">
             <div className="bg-white">
             <div className="p-3 rounded w-15">
@@ -39,11 +44,16 @@ function Dashboard() {
             </div>
             
             <div>
-                {professorDetails.isHOD ? <button type="button" className="btn btn-primary">Show Professor Details</button> : <></>}
+            {professorDetails.isHOD ? 
+            <button type="button" className="btn btn-primary" onClick={()=>setShow(!show)} >Show Class Details</button> : <></>}
             </div>
-            </div>
+           
+           </div>
         </div>
-        
+        <div style={{marginLeft:"500px"}}>{
+                show? <ClasswiseDetails /> : <></>
+            }</div>
+        </>
 
      );
 }
