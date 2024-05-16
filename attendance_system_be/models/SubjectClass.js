@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const SubjectClassSchema = new mongoose.Schema({
     prof_code: String,
-    subject: String,
+    subject: [String],
     class_code: String,
     present_students: [String],
     students_count: Number,

@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+const validate = require("./validate");
+
 const dashboardRoutes = require("./dashboards");
 const loginRoutes = require("./login");
 const registerRoutes = require("./registration");
