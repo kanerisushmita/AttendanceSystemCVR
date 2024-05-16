@@ -3,11 +3,13 @@ import ProfessorLogin from "./login/ProfessorLogin"
 import StudentSignup from "./register/StudentSignup"
 import ProfessorSignup from "./register/ProfessorRegistration"
 import SubjectClass from "./register/SubjectClass"
-import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import StudentDashboard from './dashboards/StudentDashboard'
 import ProfessorDashboard from './dashboards/ProfessorDashboard'
 import Home from './Home'
 import AuthenticateRoute from './helper/AuthenticateRoute'
+import ViewAttendance from "./components/viewAttendance"
+import ShowAttendance from "./components/showAttendance"
 
 
 function App() {
@@ -20,19 +22,25 @@ function App() {
         <Route path="/studentlogin" element={<StudentLogin />}></Route>
         <Route path="/professorlogin" element={<ProfessorLogin />}></Route>
         <Route
-            path="/attendance"
-            exact
-            element={<AuthenticateRoute Element={StudentDashboard} Role = {"student"} endpoint = {"studentlogin"} />} //send Role parameter as desired access control role
+          path="/viewAttendance" element={<ViewAttendance />} //send Role parameter as desired access control role
         />
         <Route
-            path="/professordashboard"
-            exact
-            element={<AuthenticateRoute Element={ProfessorDashboard} Role = {"professor"} endpoint = {"professorlogin"} />} //send Role parameter as desired access control role
+          path="/showAttendance" element={<ShowAttendance />} //send Role parameter as desired access control role
         />
         <Route
-            path="/createsubjectclass"
-            exact
-            element={<AuthenticateRoute Element={SubjectClass} Role = {"professor"} endpoint = {"professorlogin"} />} //send Role parameter as desired access control role
+          path="/attendance"
+          exact
+          element={<AuthenticateRoute Element={StudentDashboard} Role={"student"} endpoint={"studentlogin"} />} //send Role parameter as desired access control role
+        />
+        <Route
+          path="/professordashboard"
+          exact
+          element={<AuthenticateRoute Element={ProfessorDashboard} Role={"professor"} endpoint={"professorlogin"} />} //send Role parameter as desired access control role
+        />
+        <Route
+          path="/createsubjectclass"
+          exact
+          element={<AuthenticateRoute Element={SubjectClass} Role={"professor"} endpoint={"professorlogin"} />} //send Role parameter as desired access control role
         />
       </Routes>
     </BrowserRouter>

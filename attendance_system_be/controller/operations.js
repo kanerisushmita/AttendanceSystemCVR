@@ -6,7 +6,7 @@ router.post("/markattendance", (req, res) => {
   const _id = req.body.class_code;
   const roll_no = req.body.roll_no;
   SubjectClass.updateOne(
-    { _id, present_students: { $ne: roll_no } },
+    { class_code: _id, present_students: { $ne: roll_no } },
     { $push: { present_students: roll_no } }
   )
     .then((result) => {
