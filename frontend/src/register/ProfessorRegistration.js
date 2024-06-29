@@ -45,10 +45,15 @@ function Signup() {
             <label htmlFor="professordata">
               <strong>Upload Professor Data xlsx file</strong>
             </label>
+	    <br/><a href="https://docs.google.com/spreadsheets/d/1xToEGBhentIBCAxXV1OXjI1nLHu9Pq0v/edit?usp=sharing&ouid=108087833834616414061&rtpof=true&sd=true" target="_blank">Download Sample</a><br/>
             <input type="file" accept=".xlsx" onChange={handleFileChange} />
           </div>
-          <button type="submit" className="btn btn-success w-100 rounded-0">
+          <button type="submit" className="btn btn-success w-50 rounded-0">
             Register Professors
+          </button>
+	
+	       <button onClick={()=>navigate('/ProfessorLogin')} style={{"marginLeft":"10%"}} className="btn btn-success w-30 rounded-0">
+            Login
           </button>
           <p>{uploadStatus}</p>
           </form>        
